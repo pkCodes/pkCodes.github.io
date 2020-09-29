@@ -18,17 +18,26 @@ class CreateElement {
       elementNames[20].addEventListener('click', () => {
         powerState = !powerState;
         for (let i = 1; i < 20; i++) {
-          let eventListeners = () => (i < 17 ? (screenInputs.innerText += elementValues[i]) : 0);
           if (powerState) {
             document.body.style.backgroundColor = 'azure';
             app.style.cssText += 'background-color: #4d4d4d;';
             screen.style.cssText += 'background-color: azure';
             elementNames[i].style.cssText = i > 0 && i < 10 ? this.digitStyle() : i > 11 && i < 17 ? this.operatorStyle() : i == 10 || i == 11 || i == 18 ? this.dotzeroStyle() : i == 17 || i == 19 ? this.clrBtnstyle() : i == 20 ? this.pwrBtnstyle() : 0;
-            elementNames[i].addEventListener('click', eventListeners);
+            elementNames[i].eventListeners = () => (i < 17 ? (screenInputs.innerText += elementValues[i]) : 0);
+            elementNames[i].addEventListener('click', elementNames[i].eventListeners);
             if (i == 18) elementNames[18].addEventListener('click', () => CreateElement.calculate());
           } else {
-            // elementNames[i].removeEventListener('click', eventListeners);
-            window.location.reload();
+            screenInputs.innerText = '';
+            elementNames[i].removeEventListener('click', elementNames[i].eventListeners);
+            elementNames[i].style.cssText = i > 0 && i < 10 ? this.digitStyle() : i > 11 && i < 17 ? this.operatorStyle() : i == 10 || i == 11 || i == 18 ? this.dotzeroStyle() : i == 17 || i == 19 ? this.clrBtnstyle() : i == 20 ? this.pwrBtnstyle() : 0;
+            app.style.cssText += 'background-color: gray;';
+            document.body.style.backgroundColor = '#272727';
+            let oC = 'background-color: #3a3a3a';
+            screen.style.cssText += oC;
+            clrBtns.style.cssText += oC;
+            digits.style.cssText += oC;
+            operators.style.cssText += oC;
+            dotZero.style.cssText += oC;
           }
         }
       });
@@ -66,7 +75,8 @@ class CreateElement {
   }
 
   static calculate() {
-    screenInputs.innerText = eval(screenInputs.innerText);
+    let op = eval(screenInputs.innerText);
+    typeof op == 'undefined' ? (screenInputs.innerText = '') : (screenInputs.innerText = op);
   }
 }
 
@@ -87,7 +97,7 @@ class CreateDiv extends CreateElement {
 }
 
 var app = new CreateDiv({ p: root, s: 'height: 505px; width: 400px; background-color: gray; text-align: center; border-radius: 20px;' }).newEle2;
-var screen = new CreateDiv({ p: app, s: 'height: 100px; background-color: #3a3a3a; margin: 10px; border-radius: 10px; position: relative; direction: rtl;' }).newEle2;
+var screen = new CreateDiv({ p: app, s: 'height: 100px; background-color: #3a3a3a; margin: 10px; border-radius: 10px; position: relative;text-align: right;' }).newEle2;
 var screenInputs = new CreateDiv({ p: screen, s: 'position: absolute; bottom: 0; right: 10px; color: #335c67; font-size: 55px;' }).newEle2;
 var clrBtns = new CreateDiv({ p: app, s: 'height: 75px; width: 300px; background-color: #3a3a3a; margin: 0 0 10px 10px; border-radius: 10px; display: flex; flex-wrap: wrap; justify-content: space-evenly; align-items: center; float: left;' }).newEle2;
 var powerSwitch = new CreateDiv({ p: app, s: 'width: 70px; height: 75px; background-color: #ff3636; float: right; margin: 0 10px; border-radius: 10px;  display: flex; flex-wrap: wrap; justify-content: space-evenly; align-items: center;' }).newEle2;
